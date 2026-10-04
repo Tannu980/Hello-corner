@@ -1,1 +1,10 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
 
+# Editors and system files
+.vscode/
+.idea/
+.DS_Store
