@@ -1,1 +1,26 @@
+/* Warm, soft colours so the page feels calm and friendly. */
+body { font-family: system-ui, sans-serif; background: #fdf6ee; color: #3b2f2f; margin: 0; }
+main { max-width: 640px; margin: 0 auto; padding: 24px 16px; }
+h1 { margin-bottom: 4px; }
+.sub { margin-top: 0; color: #7a6a60; }
 
+/* The three mode buttons */
+.modes { display: flex; gap: 8px; flex-wrap: wrap; margin: 16px 0 8px; }
+.modes button { border: 2px solid #e6c9a8; background: white; padding: 8px 14px; border-radius: 20px; cursor: pointer; }
+.modes button.active { background: #f4a259; border-color: #f4a259; color: white; }
+.hint { font-size: 14px; color: #7a6a60; min-height: 20px; }
+
+/* The chat box and the message bubbles */
+#chat { background: white; border-radius: 12px; padding: 12px; height: 340px; overflow-y: auto; border: 1px solid #eadbc8; }
+.msg { margin: 8px 0; padding: 8px 12px; border-radius: 12px; max-width: 80%; line-height: 1.4; }
+.msg.ai { background: #f1e3d3; }
+.msg.me { background: #f4a259; color: white; margin-left: auto; }
+
+/* Typing area, mic and send button */
+.send-row { display: flex; gap: 8px; margin-top: 12px; }
+.send-row input { flex: 1; padding: 10px; border-radius: 10px; border: 1px solid #e6c9a8; font-size: 16px; }
+.send-row button { border: none; background: #5b8e7d; color: white; padding: 10px 14px; border-radius: 10px; cursor: pointer; font-size: 16px; }
+#mic.listening { background: #d9534f; }
+
+.wins { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-top: 16px; font-size: 14px; }
+.note { font-size: 12px; color: #9a8a80; }
