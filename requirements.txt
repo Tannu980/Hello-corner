@@ -1,1 +1,2 @@
-
+# Good news: nothing to install! This project uses only what comes with Python.
+# You just need Ollama (https://ollama.com) running on your computer.
