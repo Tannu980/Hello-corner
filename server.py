@@ -1,1 +1,82 @@
 
+import json
+import os
+import urllib.request
+from functools import partial
+from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
+
+OLLAMA_URL = os.environ.get("OLLAMA_URL", "http://localhost:11434")
+MODEL = os.environ.get("HELLO_MODEL", "llama3.2:3b")
+PORT = int(os.environ.get("PORT", "8000"))
+
+PERSONAS = {
+    "friend": (
+        "You are Sam, a warm and patient new friend chatting with a college student "
+        "who is practicing conversation. Talk about everyday things: classes, food, "
+        "hobbies, music, weekends. Reply in 1 to 3 short sentences. Ask only ONE easy "
+        "question at a time. Share a tiny bit about yourself so it feels like a real "
+        "chat, not an interview. If her answers are short, that is fine - be kind and "
+        "encouraging. Never judge her or correct her."
+    ),
+    "startup": (
+        "You are a friendly startup mentor talking to a college student. Help her "
+        "find startup ideas by asking about small problems she notices in daily "
+        "college life. Suggest simple ideas, one at a time, and ask ONE question to "
+        "dig deeper. Keep replies under 70 words and be encouraging."
+    ),
+    "stage": (
+        "You are a kind audience member. The student is practicing a short talk or "
+        "self-introduction. Reply with exactly three parts: (1) one specific thing "
+        "she did well, (2) one small, gentle tip, (3) one friendly question an "
+        "audience member might ask. Keep it under 80 words. Never be harsh."
+    ),
+}
+
+
+def ask_ollama(mode, messages):
+    persona = PERSONAS.get(mode, PERSONAS["friend"])
+    body = json.dumps({
+        "model": MODEL,
+        "stream": False,
+        "messages": [{"role": "system", "content": persona}] + messages[-10:],
+    }).encode()
+    request = urllib.request.Request(
+        OLLAMA_URL + "/api/chat", data=body,
+        headers={"Content-Type": "application/json"},
+    )
+    with urllib.request.urlopen(request, timeout=120) as response:
+        return json.loads(response.read())["message"]["content"].strip()
+
+
+class Handler(SimpleHTTPRequestHandler):
+
+    def do_POST(self):
+        if self.path != "/api/chat":
+            self.send_error(404)
+            return
+
+        length = int(self.headers.get("Content-Length", 0))
+        data = json.loads(self.rfile.read(length))
+
+        try:
+            reply = ask_ollama(data.get("mode", "friend"), data.get("messages", []))
+            status = 200
+        except Exception:
+            reply = ("I can't reach the AI right now. Is Ollama running? "
+                     "(Open a terminal and try: ollama serve)")
+            status = 503
+
+        payload = json.dumps({"reply": reply}).encode()
+        self.send_response(status)
+        self.send_header("Content-Type", "application/json")
+        self.send_header("Content-Length", str(len(payload)))
+        self.end_headers()
+        self.wfile.write(payload)
+
+
+if __name__ == "__main__":
+    here = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static")
+    server = ThreadingHTTPServer(("127.0.0.1", PORT), partial(Handler, directory=here))
+    print(f"Hello Corner is ready at http://localhost:{PORT}  (model: {MODEL})")
+    print("Press Ctrl+C to stop.")
+    server.serve_forever()
