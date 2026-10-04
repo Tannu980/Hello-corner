@@ -1,1 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hello Corner</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main>
+    <h1>Hello Corner &#128075;</h1>
+    <p class="sub">A calm place to practice talking. No audience, no judging, no rush.</p>
 
+    <!-- Pick how you want to practice today -->
+    <div class="modes">
+      <button data-mode="friend" class="active">Chat with a friend</button>
+      <button data-mode="startup">Startup ideas</button>
+      <button data-mode="stage">Practice a talk</button>
+    </div>
+
+    <p id="hint" class="hint"></p>
+    <div id="chat"></div>
+
+    <!-- Type here, or press the mic and speak -->
+    <div class="send-row">
+      <input id="box" placeholder="Type here, or press the mic and speak..." autocomplete="off">
+      <button id="mic" title="Speak instead of typing">&#127908;</button>
+      <button id="send">Send</button>
+    </div>
+
+    <div class="wins">
+      <span>&#11088; Practice days: <b id="days">0</b></span>
+      <span id="challenge"></span>
+    </div>
+    <p class="note">Everything stays on this computer. Hello Corner is practice for real conversations, not a replacement for them.</p>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
